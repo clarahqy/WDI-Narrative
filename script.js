@@ -300,85 +300,8 @@ class AnnotationSystem {
   }
 
   // Add persistent annotation
-  addAnnotation(data, position, text, highlight = false) {
-    const chartWidth = chartConfig.width - chartConfig.margin.left - chartConfig.margin.right;
-    const chartHeight = chartConfig.height - chartConfig.margin.top - chartConfig.margin.bottom;
-    
-    // Adjust position to stay within bounds
-    let adjustedX = position.x;
-    let adjustedY = position.y;
-    
-    // Keep annotation within chart bounds
-    if (adjustedX + 140 > chartWidth) {
-      adjustedX = chartWidth - 160;
-    }
-    if (adjustedX < 10) {
-      adjustedX = 10;
-    }
-    if (adjustedY + 40 > chartHeight) {
-      adjustedY = chartHeight - 50;
-    }
-    if (adjustedY < 10) {
-      adjustedY = 10;
-    }
-
-    const annotation = this.svg.append("g")
-      .attr("class", "annotation")
-      .attr("transform", `translate(${adjustedX + chartConfig.margin.left}, ${adjustedY + chartConfig.margin.top})`);
-
-    // Background for better readability - smaller size
-    annotation.append("rect")
-      .attr("class", "annotation-bg")
-      .attr("x", -3)
-      .attr("y", -3)
-      .attr("width", 130)
-      .attr("height", 38)
-      .attr("fill", highlight ? "#fff3cd" : "white")
-      .attr("stroke", highlight ? "#ffc107" : "#dee2e6")
-      .attr("stroke-width", highlight ? 2 : 1)
-      .attr("rx", 3)
-      .style("opacity", 0.7);
-
-    // Annotation text - smaller font
-    annotation.append("text")
-      .attr("class", "annotation-text")
-      .attr("x", 5)
-      .attr("y", 15)
-      .text(text)
-      .style("font-size", "10px")
-      .style("fill", highlight ? "#856404" : "#495057")
-      .style("font-weight", highlight ? "600" : "400");
-
-    // Connecting line to data point - only if close enough
-    if (data) {
-      const lineX = data.x - adjustedX;
-      const lineY = data.y - adjustedY;
-      
-      // Only draw line if it's reasonable length and not too close
-      if (Math.abs(lineX) < 150 && Math.abs(lineY) < 100 && (Math.abs(lineX) > 15 || Math.abs(lineY) > 15)) {
-        annotation.append("line")
-          .attr("class", "annotation-line")
-          .attr("x1", 0)
-          .attr("y1", 0)
-          .attr("x2", lineX)
-          .attr("y2", lineY)
-          .attr("stroke", highlight ? "#ffc107" : "#6c757d")
-          .attr("stroke-width", highlight ? 1.5 : 0.8)
-          .attr("stroke-dasharray", "2,2")
-          .style("opacity", 0.6);
-      }
-    }
-
-    this.annotations.push(annotation);
-    return annotation;
-  }
 
   // Add animated annotation that appears after delay
-  addDelayedAnnotation(data, position, text, delay, highlight = false) {
-    setTimeout(() => {
-      this.addAnnotation(data, position, text, highlight);
-    }, delay);
-  }
 
   // Add annotation without bubble (just text and line)
   addAnnotationNoBubble(data, position, text, highlight = false, customStyle = null, allowOverflow = false) {
